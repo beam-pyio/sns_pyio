@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "sns_pyio"
+version = "0.1.0"
+description = "Apache Beam Python I/O connector for Amazon SNS"
+authors = ["Beam PyIO <beam.pyio@gmail.com>"]
+license = "Apache License 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8, <3.12"
+
+[tool.poetry.dev-dependencies]
+[tool.semantic_release]
+version_toml = [
+    "pyproject.toml:tool.poetry.version",
+]                                                    # version location
+branch = "main"                                      # branch to make releases of
+changelog_file = "CHANGELOG.md"                      # changelog file
+build_command = "pip install poetry && poetry build" # build dists 
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
