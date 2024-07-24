@@ -2,9 +2,13 @@
 from importlib.metadata import version
 __version__ = version("sns_pyio")
 
-from .snsio import SnsUploader
+from .options import SNSOptions
+from .snsio import SnsUploader, SnsClient, IOStatus
 
 __all__ = [
     'SnsUploader',
-    'SNSOptions'
+    'SNSOptions',
+    'SnsClient',
+    'IOStatus'
 ]
+

@@ -1,6 +1,6 @@
 import boto3
 from apache_beam.options.pipeline_options import PipelineOptions
-from typing import List, Dict, LiteralString, Any, Union, Tuple
+from typing import List, Dict, Any, Union, Tuple
 from .options import SNSOptions
 
 
@@ -46,23 +46,23 @@ class SnsClient(object):
             topic_arn: str
     ) -> Tuple[List[Dict[str, str]], List[Dict[str, Any]]]:
 
-        _success, _fail = self.client.publish_batch(
-            topic_arn = topic_arn,
-            public_batch_request_entries = batch_of_records
+        _success, _fail, _ = self.get_client().publish_batch(
+            TopicArn=topic_arn,
+            PublishBatchRequestEntries=batch_of_records
         )
 
         return _success, _fail
 
-    def list_topics(self, next_token: str = '', **kwargs) -> Dict[LiteralString, Any]:
+    def list_topics(self, next_token: str = '', **kwargs) -> Dict[str, Any]:
         pass
 
-    def list_subscriptions(self, next_token: str = '', **kwargs) -> Dict[LiteralString, Any]:
+    def list_subscriptions(self, next_token: str = '', **kwargs) -> Dict[str, Any]:
         pass
 
     def list_subscriptions_by_topic(self,
                                     topic_arn: str = '',
                                     next_token: str = '', **kwargs
-                                    ) -> Dict[LiteralString, Any]:
+                                    ) -> Dict[str, Any]:
         pass
 
     def close(self):

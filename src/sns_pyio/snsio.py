@@ -1,9 +1,15 @@
 from apache_beam.transforms.ptransform import InputT, OutputT
 
 from .boto3_client import SnsClient
-from apache_beam import PTransform, PCollection, ParDo, DoFn
+from apache_beam import PTransform, PCollection, ParDo, DoFn, pvalue
 from apache_beam.options.pipeline_options import PipelineOptions
 from typing import Optional, Union, Dict, Any, Tuple
+from enum import Enum
+
+
+class IOStatus(Enum):
+    SUCCESS = 'SUCCESS'
+    FAILURE = 'FAILURE'
 
 
 class _ImplSnsUploader(DoFn):
@@ -28,9 +34,10 @@ class _ImplSnsUploader(DoFn):
 
         _success, _fail = self.client.publish_batch(
             topic_arn=self.topic_arn,
-            batch_of_records=element
+            batch_of_records=[element]
         )
-        yield _success, _fail
+        yield pvalue.TaggedOutput(IOStatus.SUCCESS.value, _success)
+        yield pvalue.TaggedOutput(IOStatus.FAILURE.value, _fail)
 
     def finish_bundle(self):
         pass
@@ -46,12 +53,18 @@ class SnsUploader(PTransform):
         self.topic_arn = topic_arn
         self.options = options
 
-    def expand(self, pcoll: PCollection) -> Tuple[PCollection, PCollection]:
+    def expand(self, pcoll: PCollection) -> PCollection:
+
+        # BatchElements
+
+        # Batch sizes check?
+
+        # Boto3 retry (like requests.Session)
 
         return pcoll | ParDo(
             _ImplSnsUploader(
                 self.topic_arn,
                 self.options
             )
-        )
+        ).with_outputs(IOStatus.SUCCESS.value, IOStatus.FAILURE.value)
 

@@ -26,6 +26,10 @@ class SNSOptions(PipelineOptions):
             '--aws_region_name',
             default=None,
             help='The name of the region associated with the sns client.')
+        parser.add_argument(
+            '--topic_arn',
+            default=None,
+            help='The arn of the sns topic to publish messages to.')
 
         # TODO: Are the below options relevant now?
 
